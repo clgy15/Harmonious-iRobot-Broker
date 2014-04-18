@@ -4,9 +4,27 @@ net = require('net');
 // Keep track of the chat clients
 var clients = [];
 
-var beats_per_loop = 4;
+var beats_per_loop = 0;
 var current_beat = 1;
 var num_robots = 0;
+
+var prompt = require('prompt');
+
+var schema = {
+    properties: {
+      beats: {
+        pattern: /^[0-9]+$/,
+        message: 'Number of beats must be a number',
+        required: true
+      }
+    }
+  };
+
+prompt.start();
+
+prompt.get(schema, function (err,result) {
+  beats_per_loop = result.beats;
+});
 
 // Start a TCP Server
 net.createServer(function (socket) {
@@ -27,9 +45,7 @@ net.createServer(function (socket) {
   var temp = '\x02\x04\x01\x44\x53\x66\x44\r\n';
   console.log(temp.length);
 
-  // }
-
-}).listen(4454, '192.168.1.10');
+}).listen(4454, '127.0.0.1');
 
 
 setInterval(function(){
@@ -48,6 +64,7 @@ setInterval(function(){
       }
       //If the new connection now has listened to a complete loop....
       //Increment number of robots..
+      //Set iRobot to fully initialized...
       else if (client.init == 1) {
         client.init = 2;
         num_robots++;
@@ -59,7 +76,6 @@ setInterval(function(){
   }
   else {
     console.log('Tick');
-
     string_parse = '\x02'
   }
 
@@ -71,6 +87,7 @@ setInterval(function(){
     if (client.init == 2) {
       string_parse += client.note;
     }
+
   });
 
   string_parse += '\r\n';
