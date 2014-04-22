@@ -1,20 +1,16 @@
 var express = require('express');
 
+var port = 3000;
 var app = express();
-var io = require('socket.io').listen(app);
 
 app.use(express.static(__dirname + '/app'));
 
-io.sockets.on('connection', function(socket) {
-  // Blah
-});
+var io = require('socket.io').listen(app.listen(port));
 
-// Init HTTP server
-exports.run = function(port) {
-  app.listen(port, function() {
-    console.log('HTTP Server listening on port ' + port);
-  });
-};
+io.sockets.on('connection', function(socket) {
+  console.log("kdsfjldkjflsfkj");
+  socket.emit('connect', { hello: "hello socket" });
+});
 
 /*
  * Adds a new robot to the UI

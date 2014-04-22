@@ -2,8 +2,6 @@
 var net = require('net');
 var httpServer = require('./http_server');
 
-httpServer.run(3000);
-
 //Brian's to do:
 //   1. Each Robot now has a note length
 //   ex. 49 - length 2 49 - length 2 0 - length 1 51 - length 1
