@@ -1,10 +1,14 @@
 <html>
   <head>
     <title>Good Vibrations Demo</title>
+    <script type="text/javascript" src="/angular.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/app.js" charset="utf-8"></script>
   </head>
-  <body>
+  <body ng-app="goodVibrations" ng-controller="PageCtrl">
     <p>
-      Welcome to the Good Vibrations Project Demo!
+      {{hello}}
     </p>
+    <input type="text" name="sdlf" ng-model="sdf">
+    {{sdf}}
   </body>
 </html>
