@@ -1,5 +1,8 @@
 // Load the TCP Library
-net = require('net');
+var net = require('net');
+var httpServer = require('./http_server');
+
+httpServer.run(3000);
 
 //Brian's to do:
 //   1. Each Robot now has a note length

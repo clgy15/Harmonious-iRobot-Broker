@@ -2,13 +2,13 @@
   "name": "harmononious-irobot-broker",
   "version": "0.0.1",
   "description": "tcp broker to time and tick our harmonious irobots",
-
   "repository": {
     "type": "git",
     "url": "https://github.com/clgy15/Harmonious-iRobot-Broker.git"
   },
   "dependencies": {
     "prompt": "0.2.12",
-    "revalidator": "0.1.6"
+    "revalidator": "0.1.6",
+    "express": "~4.0.0"
   }
 }
