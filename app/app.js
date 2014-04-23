@@ -21,5 +21,28 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', fun
   $scope.hello = 'world';
   socket.on('connect', function(data) {
     console.log("got", data);
-  })
+  });
+}]);
+
+angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket', function($scope, socket) {
+  $scope.beatCount = 8;
+  $scope.tempo = 120;
+  $scope.maxLoops = 4;
+  $scope.notes = [];
+  $scope.durations = [];
+
+  $scope.started = false;
+
+  $scope.start = function() {
+    if(!$scope.started) {
+      socket.emit('setup', {
+        beatCount: $scope.beatCount,
+        duration: ((64 * 60) / $scope.tempo) >> 0,
+        maxLoops: $scope.maxLoops,
+        notes: $scope.notes,
+        durations: $scope.durations
+      });
+      $scope.started = true;
+    }
+  };
 }]);

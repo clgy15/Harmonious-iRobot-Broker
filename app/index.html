@@ -9,7 +9,24 @@
     <p>
       {{hello}}
     </p>
-    <input type="text" name="sdlf" ng-model="sdf">
-    {{sdf}}
+    <div class="form" ng-controller="UserParamsCtrl">
+      <form id="setup-form" ng-submit="start()">
+        <div class="form-input">
+          <label for="beats">Beats per Loop</label>
+          <input type="number" name="beats" ng-model="beatCount" />
+        </div>
+        <div class="form-input">
+          <label for="tempo">Tempo</label>
+          <input type="number" name="tempo" ng-model="tempo" />
+        </div>
+        <div class="form-input">
+          <label for="maxLoops">Robot Loops</label>
+          <input type="number" name="maxLoops" ng-model="maxLoops" />
+        </div>
+        <div class="form-input">
+          <button type="submit" ng-disabled="started">Start</button>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

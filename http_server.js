@@ -10,6 +10,9 @@ var io = require('socket.io').listen(app.listen(port));
 io.sockets.on('connection', function(socket) {
   console.log("kdsfjldkjflsfkj");
   socket.emit('connect', { hello: "hello socket" });
+  socket.on('setup', function(data) {
+    console.log(data);
+  });
 });
 
 /*
