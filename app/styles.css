@@ -17,6 +17,57 @@ body {
   font-size: 1.0em;
 }
 
+.block-list {
+  list-style: none;
+}
+
+.block-list-element {
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
+.block-list-element:last-of-type {
+  clear: left;
+}
+
+.note-select {
+  display: inline-block;
+}
+
+.left-toggle, .right-toggle, .note-display {
+  display: inline-block;
+}
+
+.left-toggle, .right-toggle {
+  vertical-align: top;
+  line-height: 100px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.note-display {
+  padding: 0 0.2em;
+}
+
+.stacked-button-inner {
+  float: left;
+  clear: left;
+}
+
+.button-icon {
+  display: block;
+  margin: 0 auto;
+  width: 50px;
+  height: 100px;
+}
+
+.button-icon-text {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 0.7em;
+}
+
 input[type="text"], input[type="number"], input[type="textarea"] {
   padding: 0.2em 0.5em;
   width: 5em;
@@ -60,8 +111,7 @@ input[type="text"]:disabled, input[type="number"]:disabled, input[type="textarea
   zoom: 1;
   *display: inline;
   border: 1px solid #d4d4d4;
-  height: 2em;
-  line-height: 1em;
+  line-height: 2em;
   padding: 0px 1.75em;
   font-weight: 300;
   font-size: 1em;
@@ -92,6 +142,43 @@ input[type="text"]:disabled, input[type="number"]:disabled, input[type="textarea
 
 .button:focus {
   outline: none;
+}
+
+.button-flat {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition-property: background;
+  -moz-transition-property: background;
+  -o-transition-property: background;
+  transition-property: background;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  background: #eeeeee;
+  border: none;
+  text-shadow: none;
+}
+
+.button-flat:hover, .button-flat:focus {
+  background: #fbfbfb;
+}
+
+.button-flat:active {
+  -webkit-transition-duration: 0s;
+  -moz-transition-duration: 0s;
+  -o-transition-duration: 0s;
+  transition-duration: 0s;
+  background: #eeeeee;
+  color: #bbbbbb;
+}
+
+.button-flat:disabled {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-appearance: none;
 }
 
 .button-flat-primary {
