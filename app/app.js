@@ -68,14 +68,14 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
 
   $scope.noteTypes = [
     {
-      name: "Quarter Note",
-      duration: 2,
-      path: "/icons/quarter_note.svg",
-      isRest: false
-    }, {
       name: "Eighth Note",
       duration: 1,
       path: "/icons/eighth_note.svg",
+      isRest: false
+    }, {
+      name: "Quarter Note",
+      duration: 2,
+      path: "/icons/quarter_note.svg",
       isRest: false
     }, {
       name: "Half Note",

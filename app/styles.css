@@ -2,19 +2,38 @@ body {
   font-family: "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 }
 
+.small {
+  font-size: 0.8em;
+}
+
 .form-input-line {
+  display: table;
   padding: 0.5em;
   font-size: 1.2em;
 }
 
-.form-input-line label {
-  display: inline-block;
+.form-input-label {
+  display: table-cell;
+  vertical-align: middle;
   width: 10em;
+}
+
+.form-input-entry {
+  display: table-cell;
 }
 
 .form-input {
   display: inline-block;
   font-size: 1.0em;
+}
+
+.note-list {
+  display: block;
+  padding: 0.5em;
+  min-height: 100px;
+  min-width: 20em;
+  background-color: #fafafa;
+  border-radius: 0.2em;
 }
 
 .block-list {

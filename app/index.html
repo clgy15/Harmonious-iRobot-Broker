@@ -11,46 +11,59 @@
     <div class="form" ng-controller="UserParamsCtrl">
       <h3>Setup</h3>
       <div class="form-input-line">
-        <label for="beats">Beats per Loop</label>
-        <input type="number" class="form-input" name="beats" ng-disabled="started" ng-model="beatCount" />
+        <label class="form-input-label" for="beats">Beats per Loop</label>
+        <div class="form-input-entry">
+          <input type="number" class="form-input" name="beats" ng-disabled="started" ng-model="beatCount" />
+        </div>
       </div>
 
       <div class="form-input-line">
-        <label for="tempo">Tempo</label>
-        <input type="number" class="form-input" name="tempo" ng-disabled="started" ng-model="tempo" />
+        <label class="form-input-label" for="tempo">Tempo</label>
+        <div class="form-input-entry">
+          <input type="number" class="form-input" name="tempo" ng-disabled="started" ng-model="tempo" />
+        </div>
       </div>
 
       <div class="form-input-line">
-        <label for="maxLoops">Robot Loops</label>
-        <input type="number" class="form-input" name="maxLoops" ng-disabled="started" ng-model="maxLoops" />
+        <label class="form-input-label" for="maxLoops">Robot Loops</label>
+        <div class="form-input-entry">
+          <input type="number" class="form-input" name="maxLoops" ng-disabled="started" ng-model="maxLoops" />
+        </div>
       </div>
 
       <div class="note-select">
         <h3>Pattern Select</h3>
         <div class="form-input-line">
-          <label for="type">Type/Duration</label>
-          <note-select name="type" note-options="noteTypes" ng-model="noteType"></note-select>
+          <label class="form-input-label" for="type">Type/Duration</label>
+          <div class="form-input-entry">
+            <note-select name="type" note-options="noteTypes" ng-model="noteType"></note-select>
+          </div>
         </div>
 
         <div class="form-input-line">
-          <label for="pitch">Pitch</label>
-          <input type="number" class="form-input" min="31" max="127" name="pitch" ng-disabled="started || noteType.isRest" ng-model="pitch" />
+          <label class="form-input-label" for="pitch">Pitch</label>
+          <div class="form-input-entry">
+            <input type="number" class="form-input" min="31" max="127" name="pitch" ng-disabled="started || noteType.isRest" ng-model="pitch" />
+          </div>
         </div>
 
         <button class="button button-rounded button-flat" ng-click="addNote(noteType, pitch); $event.stopPropagation();">Add Note</button>
 
-        <div class="note-list">
-          <ul class="block-list">
-            <li class="block-list-element" ng-repeat="note in notes">
-              <img class="button-icon" width="50px" height="100px" ng-src="{{getNoteImage(note.duration, note.pitch)}}" />
-              <span class="button-icon-text">{{getNoteName(note.pitch)}}</span>
-            </li>
-          </ul>
-          <p>Pattern Length: {{patternLength()}}/{{beatCount}} beats</p>
+        <div class="form-input-line">
+          <label class="form-input-label">Current Pattern</label>
+          <div class="form-input-entry">
+            <ul class="block-list note-list">
+              <li class="block-list-element" ng-repeat="note in notes">
+                <img class="button-icon" width="50px" height="100px" ng-src="{{getNoteImage(note.duration, note.pitch)}}" />
+                <span class="button-icon-text">{{getNoteName(note.pitch)}}</span>
+              </li>
+            </ul>
+            <p class="small">Pattern Length: {{patternLength()}}/{{beatCount}} beats</p>
+          </div>
         </div>
       </div>
 
-      <div class="form-input-line">
+      <div>
         <button type="submit" class="button button-rounded button-flat-primary" ng-click="start()" ng-disabled="started">{{ started ? "Running" : "Start" }}</button>
       </div>
     </div>
@@ -58,23 +71,35 @@
     <h3>Harmonization Settings</h3>
     <div class="settings-form">
       <div class="form-input-line">
-        <label for="octave">Octave Frequencies</label>
-        <input type="range" name="octave" min="0" max="100" ng-model="octave" />
+        <label class="form-input-label" for="octave">Octave Frequencies</label>
+        <div class="form-input-entry">
+          <input type="range" name="octave" min="0" max="100" ng-model="octave" />
+          <input class="form-input" type="number" name="octave_text" min="0" max="100" ng-model="octave" />
+        </div>
       </div>
 
       <div class="form-input-line">
-        <label for="third">Third Frequencies</label>
-        <input type="range" name="third" min="0" max="100" ng-model="third" />
+        <label class="form-input-label" for="third">Third Frequencies</label>
+        <div class="form-input-entry">
+          <input type="range" name="third" min="0" max="100" ng-model="third" />
+          <input class="form-input" type="number" name="third_text" min="0" max="100" ng-model="third" />
+        </div>
       </div>
 
       <div class="form-input-line">
-        <label for="fifth">Fifth Frequencies</label>
-        <input type="range" name="fifth" min="0" max="100" ng-model="fifth" />
+        <label class="form-input-label" for="fifth">Fifth Frequencies</label>
+        <div class="form-input-entry">
+          <input type="range" name="fifth" min="0" max="100" ng-model="fifth" />
+          <input class="form-input" type="number" name="fifth_text" min="0" max="100" ng-model="fifth" />
+        </div>
       </div>
 
       <div class="form-input-line">
-        <label for="seventh">Seventh Frequencies</label>
-        <input type="range" name="seventh" min="0" max="100" ng-model="seventh" />
+        <label class="form-input-label" for="seventh">Seventh Frequencies</label>
+        <div class="form-input-entry">
+          <input type="range" name="seventh" min="0" max="100" ng-model="seventh" />
+          <input class="form-input" type="number" name="seventh_text" min="0" max="100" ng-model="seventh" />
+        </div>
       </div>
     </div>
 
