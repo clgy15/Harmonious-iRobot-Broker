@@ -1,30 +1,28 @@
 <html>
   <head>
     <title>Good Vibrations Demo</title>
+    <link rel="stylesheet" href="styles.css" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript" src="/vendor/angular.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="/app.js" charset="utf-8"></script>
     <script type="text/javascript" src="/vendor/socket.io.min.js" charset="utf-8"></script>
   </head>
   <body ng-app="goodVibrations" ng-controller="PageCtrl">
-    <p>
-      {{hello}}
-    </p>
     <div class="form" ng-controller="UserParamsCtrl">
       <form id="setup-form" ng-submit="start()">
-        <div class="form-input">
+        <div class="form-input-line">
           <label for="beats">Beats per Loop</label>
-          <input type="number" name="beats" ng-model="beatCount" />
+          <input type="number" class="form-input" name="beats" ng-disabled="started" ng-model="beatCount" />
         </div>
-        <div class="form-input">
+        <div class="form-input-line">
           <label for="tempo">Tempo</label>
-          <input type="number" name="tempo" ng-model="tempo" />
+          <input type="number" class="form-input" name="tempo" ng-disabled="started" ng-model="tempo" />
         </div>
-        <div class="form-input">
+        <div class="form-input-line">
           <label for="maxLoops">Robot Loops</label>
-          <input type="number" name="maxLoops" ng-model="maxLoops" />
+          <input type="number" class="form-input" name="maxLoops" ng-disabled="started" ng-model="maxLoops" />
         </div>
-        <div class="form-input">
-          <button type="submit" ng-disabled="started">Start</button>
+        <div class="form-input-line">
+          <button type="submit" class="button button-rounded button-flat-primary" ng-disabled="started">{{ started ? "Running" : "Start" }}</button>
         </div>
       </form>
     </div>

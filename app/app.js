@@ -18,7 +18,6 @@ angular.module('goodVibrations').service('socket', [function() {
 }]);
 
 angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', function($scope, socket) {
-  $scope.hello = 'world';
   socket.on('connect', function(data) {
     console.log("got", data);
   });
