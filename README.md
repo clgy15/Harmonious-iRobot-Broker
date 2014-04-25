@@ -65,13 +65,12 @@ This is our initialization case. When the 1st robot comes on-line, the Broker se
 
 
 ####Happy Lyric
-	19
+	18
 	0,1
 	48, 1
 	48, 2
-	51, 1
-	60, 1
-	60, 1
+	51, 2
+	60, 2
 	65, 1
 	65, 1
 	65, 3

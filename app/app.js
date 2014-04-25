@@ -1,3 +1,9 @@
+/*
+To DO:
+   1: Enter & Tab Key Functionality
+
+*/
+
 angular.module('goodVibrations', []);
 angular.module('goodVibrations').config(['$locationProvider', function($locationProvider) {
   $locationProvider.html5Mode(true);
@@ -151,12 +157,47 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
   $scope.started = false;
 
   $scope.start = function() {
+    console.log($scope.beatCount);
+    console.log(((64 * 60) / $scope.tempo) >> 0);
+    console.log($scope.maxLoops);
+    console.log($scope.notes);
     if(!$scope.started) {
       socket.emit('setup', {
         beatCount: $scope.beatCount,
         duration: ((64 * 60) / $scope.tempo) >> 0,
         maxLoops: $scope.maxLoops,
         notes: $scope.notes
+      });
+      $scope.started = true;
+    }
+  };
+
+  $scope.start_happy = function() {
+    if(!$scope.started) {
+      socket.emit('setup', {
+        beatCount: 33,
+        duration: 12,
+        maxLoops: 5,
+        notes: [ { duration: 1, pitch: 0},
+     { duration: 1, pitch: 48 },
+     { duration: 2, pitch: 48 },
+     { duration: 2, pitch: 51 },
+     { duration: 2, pitch: 60 },
+     { duration: 1, pitch: 65 },
+     { duration: 1, pitch: 65 },
+     { duration: 1, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 1, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 1, pitch: 65 },
+     { duration: 1, pitch: 63 },
+     { duration: 2, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 2, pitch: 65 },
+     { duration: 1, pitch: 63 },
+     { duration: 4, pitch: 65} ]
       });
       $scope.started = true;
     }

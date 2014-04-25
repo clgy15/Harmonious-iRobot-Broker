@@ -7,13 +7,20 @@ app.use(express.static(__dirname + '/app'));
 
 var io = require('socket.io').listen(app.listen(port));
 
+var start_function;
+
 io.sockets.on('connection', function(socket) {
   console.log("kdsfjldkjflsfkj");
   socket.emit('connect', { hello: "hello socket" });
   socket.on('setup', function(data) {
     console.log(data);
+    start_function(data);
   });
 });
+
+exports.startFunction = function(fnc) {
+  start_function = fnc;
+}
 
 /*
  * Adds a new robot to the UI
