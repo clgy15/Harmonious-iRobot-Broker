@@ -37,7 +37,7 @@ var client_server = net.createServer(function (socket) {
 
     if (data.readUInt8(0) == 1) {
       console.log("iRobot coming online...");
-      //console.log(data);
+      console.log(data);
       for (var i = 1; i <= beats_per_loop;) {
         var note = data.readUInt8(i);
         i++;
@@ -70,21 +70,26 @@ var client_server = net.createServer(function (socket) {
 
   socket.on('end', function() {
     console.log("Client closed connection: .... Good Day Robot!");
-
+    loc = clients.indexOf(socket);
+    clients.splice(loc,1);
+    httpServer.removeRobot(socket.remoteAddress);
+    if (num_robots > 0) {
+      num_robots--;
+    }
   });
 
   //Currenty, any error on client side will remove the client from our array list
   socket.on('error', function(err){
       // Handle the connection error.
       console.log("Hit an error: " + err + ".... Current Protocol is to remove iRobot. Good Day Robot!");
-
+      loc = clients.indexOf(socket);
+      clients.splice(loc,1);
       if (num_robots > 0) {
-        loc = clients.indexOf(socket);
-        clients.splice(loc,1);
         num_robots--;
-
-        httpServer.removeRobot(socket.remoteAddress);
       }
+
+      httpServer.removeRobot(socket.remoteAddress);
+
   });
 
 
