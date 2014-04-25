@@ -84,10 +84,18 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
       path: "/icons/quarter_note.svg",
       isRest: false
     }, {
+      name: "Dotted Quarter Note",
+      duration: 3,
+      path: "/icons/dotted_quarter_note.svg"
+    }, {
       name: "Half Note",
       duration: 4,
       path: "/icons/half_note.svg",
       isRest: false
+    }, {
+      name: "Dotted Half Note",
+      duration: 6,
+      path: "/icons/dotted_half_note.svg"
     }, {
       name: "Rest",
       duration: 1,
@@ -129,8 +137,15 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
       case 2:
         return "/icons/quarter_note.svg";
         break;
+      case 3:
+        return "/icons/dotted_quarter_note.svg";
+        break;
       case 4:
         return "/icons/half_note.svg";
+        break;
+      case 6:
+        return "/icons/dotted_half_note.svg";
+        break;
       }
     }
   };
