@@ -35,27 +35,35 @@ var client_server = net.createServer(function (socket) {
   socket.on('data', function(data) {
     console.log("Recieved Something: " + data);
 
-    if (data.readUInt8(0) == 1) {
-      console.log("iRobot coming online...");
-      console.log(data);
-      for (var i = 1; i <= beats_per_loop;) {
-        var note = data.readUInt8(i);
-        i++;
-        var length = data.readUInt8(i)/(milli_time/1000*64 >> 0);
-        socket.notes.push(note);
-        socket.lengths.push(length);
-        for (var j = 1; j < length; j++) {
-          socket.notes.push('1');
+    if (data.readUInt8(0) == 1) {  // Play Song
+      try {
+        console.log("iRobot coming online...");
+        console.log(data);
+        for (var i = 1; i <= beats_per_loop;) {
+          var note = data.readUInt8(i);
+          i++;
+          var length = data.readUInt8(i)/(milli_time/1000*64 >> 0);
+          socket.notes.push(note);
           socket.lengths.push(length);
+          for (var j = 1; j < length; j++) {
+            socket.notes.push('1');
+            socket.lengths.push(length);
+          }
+          i++;
+
         }
-        i++;
+        console.log(socket.notes)
+        socket.init = 2;
+        num_robots++;
 
+        httpServer.setRobotPattern(socket.remoteAddress, socket.notes, socket.lengths);
+      } catch (e) {
+        console.log(e);
+        console.log("Bad robot!", socket.remoteAddress);
+        httpServer.removeRobot(socket.remoteAddress);
+        loc = clients.indexOf(socket);
+        clients.splice(loc,1);
       }
-      console.log(socket.notes)
-      socket.init = 2;
-      num_robots++;
-
-      httpServer.setRobotPattern(socket.remoteAddress, socket.notes, socket.lengths);
     }
     else if (data.readUInt8(0) == 0) {
       console.log("Client Stopped Playing: .... Good Day Robot!");
@@ -121,7 +129,7 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.15');
+  client_server.listen(4454, '192.168.1.59');
 
   setInterval(function(){
     var string_parse = ''
@@ -186,3 +194,51 @@ var startTCP = function(data) {
 };
 
 httpServer.startFunction(startTCP);
+// setTimeout(function() {
+//   httpServer.addRobot("192.168.1.4");
+//   setTimeout(function() {
+//     httpServer.setRobotPattern("192.168.1.4", [
+//       0,
+//       48,
+//       48,
+//       51,
+//       60,
+//       65,
+//       65,
+//       65,
+//       65,
+//       65,
+//       65,
+//       65,
+//       65,
+//       65,
+//       63,
+//       65,
+//       65,
+//       65,
+//       63,
+//       65
+//     ], [
+//       1,
+//       1,
+//       2,
+//       2,
+//       2,
+//       1,
+//       1,
+//       1,
+//       2,
+//       2,
+//       2,
+//       1,
+//       2,
+//       1,
+//       1,
+//       2,
+//       2,
+//       2,
+//       1,
+//       4
+//     ]);
+//   }, 5000);
+// }, 5000);

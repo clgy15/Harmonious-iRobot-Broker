@@ -53,14 +53,87 @@ angular.module('goodVibrations').directive('noteSelect', [function() {
       };
     },
     replace: true,
-    template: '<div class="note-select"><div class="left-toggle" ng-click="prevNoteOption()">&lt;</div><div class="note-display"><img width="50px" height="100px" ng-src="{{note.path}}" /></div><div class="right-toggle" ng-click="nextNoteOption()">&gt;</div></div>'
+    template: '<div class="note-select"><div class="left-toggle" ng-click="prevNoteOption()">&lt;</div><div class="note-display"><object type="image/svg+xml" width="50px" height="100px" data="{{note.path}}" /></div><div class="right-toggle" ng-click="nextNoteOption()">&gt;</div></div>'
   };
+}]);
+
+angular.module('goodVibrations').directive('note', [function() {
+  return {
+    restrict: 'E',
+    scope: {
+      url: '@',
+      startBeat: '@',
+      currentBeat: '=',
+      duration: '@'
+    },
+    link: function(scope, elem, attrs) {
+      scope.active = false;
+      scope.$watch('currentBeat', function(newVal, oldVal) {
+        if (!scope.active && scope.currentBeat >= scope.startBeat && scope.currentBeat < parseInt(scope.startBeat, 10) + parseInt(scope.duration, 10)) {
+          var svgDoc = elem[0].getSVGDocument();
+          if (svgDoc !== null) {
+            var noteElem = angular.element(svgDoc.getElementById("svg-note"));
+            noteElem.addClass("playing");
+            scope.active = true;
+          }
+        } else if(scope.active && (scope.currentBeat < scope.startBeat || scope.currentBeat >= parseInt(scope.startBeat, 10) + parseInt(scope.duration, 10))) {
+          var svgDoc = elem[0].getSVGDocument();
+          if (svgDoc !== null) {
+            var noteElem = angular.element(svgDoc.getElementById("svg-note"));
+            noteElem.removeClass("playing");
+            scope.active = false;
+          }
+        }
+      });
+    },
+    replace: true,
+    template: '<object type="image/svg+xml" width="50px" height="100px" data="{{url}}"></object>'
+  }
 }]);
 
 angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', function($scope, socket) {
   socket.on('connect', function(data) {
     console.log("got", data);
   });
+
+  $scope.getNoteName = function(pitch) {
+    if (pitch === 0) {
+      return "N/A"
+    } else {
+      var note = "";
+      var octave = "";
+      var notes = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+      return notes[pitch % 12] + (pitch / 12 >> 0);
+    }
+  };
+
+  $scope.getNoteImage = function(duration, pitch) {
+    if (pitch === 0) {
+      switch (duration) {
+      case 1:
+        return "/icons/eighth_rest.svg";
+        break;
+      }
+    } else {
+      switch (duration) {
+      case 1:
+        return "/icons/eighth_note.svg";
+        break;
+      case 2:
+        return "/icons/quarter_note.svg";
+        break;
+      case 3:
+        return "/icons/dotted_quarter_note.svg";
+        break;
+      case 4:
+        return "/icons/half_note.svg";
+        break;
+      case 6:
+        return "/icons/dotted_half_note.svg";
+        break;
+      }
+    }
+  };
 }]);
 
 angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket', function($scope, socket) {
@@ -122,51 +195,12 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
     }
   };
 
-  $scope.getNoteImage = function(duration, pitch) {
-    if (pitch === 0) {
-      switch (duration) {
-      case 1:
-        return "/icons/eighth_rest.svg";
-        break;
-      }
-    } else {
-      switch (duration) {
-      case 1:
-        return "/icons/eighth_note.svg";
-        break;
-      case 2:
-        return "/icons/quarter_note.svg";
-        break;
-      case 3:
-        return "/icons/dotted_quarter_note.svg";
-        break;
-      case 4:
-        return "/icons/half_note.svg";
-        break;
-      case 6:
-        return "/icons/dotted_half_note.svg";
-        break;
-      }
-    }
-  };
-
   $scope.patternLength = function() {
     var totalLength = 0;
     $scope.notes.forEach(function(note) {
       totalLength += note.duration;
     });
     return totalLength;
-  };
-
-  $scope.getNoteName = function(pitch) {
-    if (pitch === 0) {
-      return "N/A"
-    } else {
-      var note = "";
-      var octave = "";
-      var notes = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-      return notes[pitch % 12] + (pitch / 12 >> 0);
-    }
   };
 
   $scope.started = false;
@@ -193,7 +227,7 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
         beatCount: 33,
         duration: 12,
         maxLoops: 5,
-        notes: [ { duration: 1, pitch: 0},
+        notes: [ { duration: 1, pitch: 0 },
      { duration: 1, pitch: 48 },
      { duration: 2, pitch: 48 },
      { duration: 2, pitch: 51 },
@@ -212,9 +246,85 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
      { duration: 2, pitch: 65 },
      { duration: 2, pitch: 65 },
      { duration: 1, pitch: 63 },
-     { duration: 4, pitch: 65} ]
+     { duration: 4, pitch: 65 } ]
       });
       $scope.started = true;
     }
+  };
+}]);
+
+angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", function($scope, socket) {
+  $scope.robots = [];
+  $scope.beat = -1;
+
+  socket.on('newRobot', function(info) {
+    var notification = new Notification('New Robot Detected', {
+      body: info.ip
+    });
+    $scope.$apply(function() {
+      $scope.robots.push({
+        ip: info.ip,
+        notes: [],
+        active: false
+      });
+    });
+  });
+
+  socket.on('setRobotPattern', function(info) {
+    $scope.robots.forEach(function(robot) {
+      if (robot.ip === info.ip) {
+        $scope.$apply(function() {
+          robot.notes = info.notes;
+          robot.active = true;
+        });
+      }
+    });
+  });
+
+  socket.on('clearRobotPattern', function(info) {
+    $scope.robots.forEach(function(robot) {
+      if (robot.ip === info.ip) {
+        $scope.$apply(function() {
+          robot.notes = [];
+          robot.active = false;
+        });
+      }
+    });
+  });
+
+  socket.on('removeRobot', function(info) {
+    $scope.robots.forEach(function(robot, index) {
+      if (robot.ip === info.ip) {
+        $scope.$apply(function() {
+          $scope.robots.splice(index, 1);
+        });
+      }
+    });
+  });
+
+  socket.on('beat', function() {
+    console.log("beat")
+    $scope.$apply(function() {
+      if ($scope.beat >= 0) {
+        $scope.beat++;
+      }
+    });
+  });
+
+  socket.on('loop', function() {
+    console.log("loop");
+    $scope.$apply(function() {
+      $scope.beat = 0;
+    });
+  });
+}]);
+
+angular.module('goodVibrations').controller('RobotCtrl', ["$scope", function($scope) {
+  $scope.startBeat = function(index) {
+    var beatSum = 0;
+    for (var i = 0; i < index; i++) {
+      beatSum += $scope.robot.notes[i].duration;
+    }
+    return beatSum;
   };
 }]);

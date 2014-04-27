@@ -1,12 +1,15 @@
+<?xml-stylesheet href="/styles.css" type="text/css" ?>
 <svg viewbox="0 0 50 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <path d="
-    M 22 65
-    L 25 65
-    L 35 40
-    L 32 40
-    C 29 44, 28 43, 28 43
-    C 28 38, 21 38, 21 43
-    C 21 49, 30 48, 32 42
-    L 22 65
-  " fill="black"/>
+  <g id="svg-note" class="svg-note">
+    <path d="
+      M 22 65
+      L 25 65
+      L 35 40
+      L 32 40
+      C 29 44, 28 43, 28 43
+      C 28 38, 21 38, 21 43
+      C 21 49, 30 48, 32 42
+      L 22 65
+    " />
+  </g>
 </svg>

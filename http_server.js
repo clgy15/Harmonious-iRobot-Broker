@@ -37,10 +37,17 @@ exports.addRobot = function(ip) {
  * Call when a robot sends its pattern to the broker
  */
 exports.setRobotPattern = function(ip, notes, durations) {
+  var combinedNotes = [];
+  notes.forEach(function(note, index) {
+    combinedNotes.push({
+      pitch: note,
+      duration: durations[index]
+    });
+  });
+
   io.sockets.emit('setRobotPattern', {
     ip: ip,
-    notes: notes,
-    durations: durations
+    notes: combinedNotes
   });
 };
 

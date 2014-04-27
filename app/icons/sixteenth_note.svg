@@ -1,14 +1,17 @@
+<?xml-stylesheet href="/styles.css" type="text/css" ?>
 <svg viewbox="0 0 50 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <path d="
-    M15 70
-    C 15 80, 37 80, 37 65
-    L 37 48
-    C 42 48, 49 61, 47 69
-    C 50 49, 39 48, 37 36
-    C 42 38, 49 50, 47 58
-    C 50 38, 39 37, 37 25
-    L 35 25
-    L 35 63
-    C 35 59, 15 60, 15 70
-  " stroke="black" stroke-width="0.5" fill="black"/>
+  <g id="svg-note" class="svg-note">
+    <path d="
+      M15 70
+      C 15 80, 37 80, 37 65
+      L 37 48
+      C 42 48, 49 61, 47 69
+      C 50 49, 39 48, 37 36
+      C 42 38, 49 50, 47 58
+      C 50 38, 39 37, 37 25
+      L 35 25
+      L 35 63
+      C 35 59, 15 60, 15 70
+    " />
+  </g>
 </svg>

@@ -1,13 +1,63 @@
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Helvetica Neue Light", "Helvetica Neue", sans-serif;
+}
+
+/* SVG */
+.svg-note {
+  fill: black;
+  stroke: black;
+  sroke-width: 0.5;
+
+  transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -webkit-trnasition: all 0.1s ease;
+}
+
+.svg-note.playing {
+  fill: orange;
+  stroke: orange;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.pane-wrap {
+  display: block;
+  width: 100%;
+}
+
+.pane {
+  display: block;
+  width: 100%;
+}
+
+.big {
+  font-size: 1.2em;
 }
 
 .small {
   font-size: 0.8em;
 }
 
+.tiny {
+  font-size: 0.6em;
+}
+
+.grey {
+  color: #888888;
+}
+
 .form-input-line {
   display: table;
+  table-layout: fixed;
+  width: 100%;
   padding: 0.5em;
   font-size: 1.2em;
 }
@@ -31,9 +81,17 @@ body {
   display: block;
   padding: 0.5em;
   min-height: 100px;
-  min-width: 20em;
+  width: 100%;
   background-color: #fafafa;
   border-radius: 0.2em;
+}
+
+.default-text {
+  display: block;
+  font-size: 1.5em;
+  color: #aaaaaa;
+  text-align: center;
+  line-height: 100px;
 }
 
 .block-list {
@@ -244,4 +302,23 @@ input[type="text"]:disabled, input[type="number"]:disabled, input[type="textarea
   -ms-border-radius: 0.20em;
   -o-border-radius: 0.20em;
   border-radius: 0.20em;
+}
+
+@media screen and (min-width: 40em) {
+  .pane-wrap {
+    display: table;
+  }
+
+  .pane {
+    display: table-cell;
+  }
+
+  .input-pane {
+    width: 30%;
+    border-right: 0.5em solid #bfbfbf;
+  }
+
+  .activity-pane {
+    width: 70%;
+  }
 }
