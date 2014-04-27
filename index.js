@@ -129,7 +129,7 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.59');
+  client_server.listen(4454, '192.168.1.16');
 
   setInterval(function(){
     var string_parse = ''
@@ -191,54 +191,55 @@ var startTCP = function(data) {
     //console.log(clients.length + " Clients Connected & " + num_robots + " Robot's Playing");
 
   }, milli_time);
+
+  // setTimeout(function() {
+  //   httpServer.addRobot("192.168.1.16");
+  //   setTimeout(function() {
+  //     httpServer.setRobotPattern("192.168.1.16", [
+  //       0,
+  //       48,
+  //       48,
+  //       51,
+  //       60,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       65,
+  //       63,
+  //       65,
+  //       65,
+  //       65,
+  //       63,
+  //       65
+  //     ], [
+  //       1,
+  //       1,
+  //       2,
+  //       2,
+  //       2,
+  //       1,
+  //       1,
+  //       1,
+  //       2,
+  //       2,
+  //       2,
+  //       1,
+  //       2,
+  //       1,
+  //       1,
+  //       2,
+  //       2,
+  //       2,
+  //       1,
+  //       4
+  //     ]);
+  //   }, 5000);
+  // }, 5000);
 };
 
 httpServer.startFunction(startTCP);
-// setTimeout(function() {
-//   httpServer.addRobot("192.168.1.4");
-//   setTimeout(function() {
-//     httpServer.setRobotPattern("192.168.1.4", [
-//       0,
-//       48,
-//       48,
-//       51,
-//       60,
-//       65,
-//       65,
-//       65,
-//       65,
-//       65,
-//       65,
-//       65,
-//       65,
-//       65,
-//       63,
-//       65,
-//       65,
-//       65,
-//       63,
-//       65
-//     ], [
-//       1,
-//       1,
-//       2,
-//       2,
-//       2,
-//       1,
-//       1,
-//       1,
-//       2,
-//       2,
-//       2,
-//       1,
-//       2,
-//       1,
-//       1,
-//       2,
-//       2,
-//       2,
-//       1,
-//       4
-//     ]);
-//   }, 5000);
-// }, 5000);

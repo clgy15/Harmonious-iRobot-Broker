@@ -228,25 +228,25 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
         duration: 12,
         maxLoops: 5,
         notes: [ { duration: 1, pitch: 0 },
-     { duration: 1, pitch: 48 },
-     { duration: 2, pitch: 48 },
-     { duration: 2, pitch: 51 },
-     { duration: 2, pitch: 60 },
-     { duration: 1, pitch: 65 },
-     { duration: 1, pitch: 65 },
-     { duration: 1, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 1, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 1, pitch: 65 },
-     { duration: 1, pitch: 63 },
-     { duration: 2, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 2, pitch: 65 },
-     { duration: 1, pitch: 63 },
-     { duration: 4, pitch: 65 } ]
+                 { duration: 1, pitch: 48 },
+                 { duration: 2, pitch: 48 },
+                 { duration: 2, pitch: 51 },
+                 { duration: 2, pitch: 60 },
+                 { duration: 1, pitch: 65 },
+                 { duration: 1, pitch: 65 },
+                 { duration: 1, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 1, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 1, pitch: 65 },
+                 { duration: 1, pitch: 63 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 2, pitch: 65 },
+                 { duration: 1, pitch: 63 },
+                 { duration: 4, pitch: 65 } ]
       });
       $scope.started = true;
     }
@@ -274,7 +274,13 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", f
     $scope.robots.forEach(function(robot) {
       if (robot.ip === info.ip) {
         $scope.$apply(function() {
-          robot.notes = info.notes;
+          robot.notes = [];
+          info.notes.forEach(function(note) {
+            if (note.pitch != 1) {
+              robot.notes.push(note);
+            }
+          })
+          //robot.notes = info.notes;
           robot.active = true;
         });
       }
