@@ -124,6 +124,7 @@ var startTCP = function(data) {
       beats_per_loop++;
     }
   });
+  httpServer.setBeatLength(beats_per_loop);
   //init_notes = result.notes.split();
   console.log(init_notes);
   console.log(init_lengths);
@@ -132,7 +133,7 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.59');
+  client_server.listen(4454, '192.168.1.16');
 
   setInterval(function(){
     var string_parse = ''
