@@ -9,6 +9,10 @@ body {
   font-family: "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 }
 
+.pad {
+  padding: 0.5em;
+}
+
 /* SVG */
 .svg-note {
   fill: black;
@@ -24,6 +28,7 @@ body {
   fill: orange;
   stroke: orange;
 }
+/* End SVG */
 
 .full-width {
   width: 100% !important;
@@ -72,6 +77,14 @@ body {
 
 .form-input-entry {
   display: table-cell;
+}
+
+.form-input-line.no-table, .form-input-label.no-table, .form-input-entry.no-table {
+  display: block;
+}
+
+.form-input-entry.no-table {
+  padding-left: 1em;
 }
 
 .form-input {

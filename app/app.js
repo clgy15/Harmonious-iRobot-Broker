@@ -11,6 +11,9 @@ angular.module('goodVibrations').config(['$locationProvider', function($location
 
 angular.module('goodVibrations').factory('state', [function() {
   return {
+    setValue: function(current, updated) {
+      return (updated == null) ? current : updated;
+    },
     beatCount: 8,
     tempo: 120,
     maxLoops: 5,
@@ -102,9 +105,16 @@ angular.module('goodVibrations').directive('note', [function() {
   }
 }]);
 
-angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', function($scope, socket) {
+angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'state', function($scope, socket, state) {
   socket.on('connect', function(data) {
-
+    if (data != null) {
+      state.beatCount = state.setValue(state.beatCount, data.beatCount);
+      state.tempo = state.setValue(state.tempo, data.tempo);
+      state.maxLoops = state.setValue(state.maxLoops, data.maxLoops);
+      state.patternNotes = state.setValue(state.patternNotes, data.patternNotes);
+      state.started = state.setValue(state.started, data.started);
+      state.robots = state.setValue(state.robots, data.robots);
+    }
   });
 
   $scope.getNoteName = function(pitch) {
@@ -147,14 +157,19 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', fun
   };
 }]);
 
-angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket', function($scope, socket) {
-  $scope.beatCount = 8;
-  $scope.tempo = 120;
-  $scope.maxLoops = 4;
-  $scope.notes = [];
+angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket', 'state', function($scope, socket, state) {
+  $scope.beatCount = state.beatCount;
+  $scope.tempo = state.tempo;
+  $scope.maxLoops = state.maxLoops;
+  $scope.notes = state.patternNotes;
+  $scope.started = state.started;
+  $scope.pitch = 60;
 
-  $scope.noteType = $scope.notes[0];
-  $scope.pitch = 68;
+  // Preferences
+  $scope.thirds = new Val(50);
+  $scope.fifths = new Val(50);
+  $scope.sevenths = new Val(50);
+  $scope.octaves = new Val(50);
 
   $scope.noteTypes = [
     {
@@ -214,8 +229,6 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
     return totalLength;
   };
 
-  $scope.started = false;
-
   $scope.start = function() {
     console.log($scope.beatCount);
     console.log(((64 * 60) / $scope.tempo) >> 0);
@@ -264,15 +277,11 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
   };
 }]);
 
-angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", function($scope, socket) {
-  $scope.robots = [];
+angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "state", function($scope, socket, state) {
+  $scope.robots = state.robots;
   $scope.beat = -1;
 
   socket.on('newRobot', function(info) {
-    var notification = new Notification('New Robot Detected', {
-      body: info.ip
-    });
-
     var contains = false;
 
     $scope.robots.forEach(function(robot) {
@@ -361,3 +370,14 @@ angular.module('goodVibrations').controller('RobotCtrl', ["$scope", function($sc
     return beatSum;
   };
 }]);
+
+function Val(init) {
+  var val = init;
+  this.__defineGetter__("val", function() {
+    return val;
+  });
+
+  this.__defineSetter__("val", function(updated) {
+    val = parseInt(updated);
+  });
+}
