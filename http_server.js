@@ -35,7 +35,12 @@ var state = {
   maxLoops: 5,
   patternNotes: [],
   started: false,
-  robots: []
+  robots: [],
+  octave_freq = 50,
+  third_freq = 50,
+  fifth_freq = 50,
+  seventh_freq = 50,
+  syncopation = false
 };
 
 io.sockets.on('connection', function(socket) {
@@ -56,6 +61,12 @@ io.sockets.on('connection', function(socket) {
   socket.on('settings', function(data) {
     console.log(data);
     update_settings_function(data);
+
+    state.octave_freq = data.octave_freq;
+    state.third_freq = data.third_freq;
+    state.fifth_freq = data.fifth_freq;
+    state.seventh_freq = data.seventh_freq;
+    state.syncopation = data.syncopation;
   });
 });
 

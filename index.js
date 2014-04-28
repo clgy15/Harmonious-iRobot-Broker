@@ -22,6 +22,7 @@ var octave_freq = 50;
 var third_freq = 50;
 var fifth_freq = 50;
 var seventh_freq = 50;
+var syncopation = false;
 
 
 var client_server = net.createServer(function (socket) {
@@ -116,6 +117,7 @@ var updateSettings = function(data) {
   third_freq = data.third_freq;
   fifth_freq = data.fifth_freq;
   seventh_freq = data.seventh_freq;
+  syncopation = data.syncopation;
 }
 
 
@@ -173,6 +175,13 @@ var startTCP = function(data) {
 
     //Now add # of Beats & # of Playing Robots
     string_parse += String.fromCharCode(beats_per_loop) + String.fromCharCode(num_robots)+String.fromCharCode(milli_time/1000*64);
+    string_parse += String.fromCharCode(octave_freq) + String.fromCharCode(third_freq) + String.fromCharCode(fifth_freq) + String.fromCharCode(seventh_freq);
+    if (syncopation == true) {
+      string_parse += String.fromCharCode('0');
+    } else {
+      string_parse += String.fromCharCode('1');
+    }
+
     if (num_robots == 0) {
       string_parse += String.fromCharCode(init_notes[current_beat]);
       string_parse += String.fromCharCode(init_lengths[current_beat]);
