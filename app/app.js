@@ -237,6 +237,7 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
     if(!$scope.started) {
       socket.emit('setup', {
         beatCount: $scope.beatCount,
+        tempo: $scope.tempo,
         duration: ((64 * 60) / $scope.tempo) >> 0,
         maxLoops: $scope.maxLoops,
         notes: $scope.notes
@@ -251,6 +252,7 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
         beatCount: 33,
         duration: 12,
         maxLoops: 5,
+        tempo: ((64 * 60) / 12) >> 0,
         notes: [ { duration: 1, pitch: 0 },
                  { duration: 1, pitch: 48 },
                  { duration: 2, pitch: 48 },

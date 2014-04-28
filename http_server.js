@@ -10,13 +10,29 @@ var io = require('socket.io').listen(app.listen(port));
 var start_function;
 var start_function_called = false;
 
-var state = {};
+// $scope.robots.push({
+//   ip: info.ip,
+//   notes: [],
+//   active: false
+// });
+
+var state = {beatCount: 0,
+            tempo: 0,
+            maxLoops: 0,
+            patternNotes: [],
+            started: false,
+            robots: []};
 
 io.sockets.on('connection', function(socket) {
   socket.emit('connect', state);
   socket.on('setup', function(data) {
     console.log(data);
     if (!start_function_called) {
+      state.tempo = data.tempo;
+      state.maxLoops = data.maxLoops;
+      state.started = true;
+      state.patternNotes = data.notes;
+
       start_function(data);
       start_function_called = true;
     }
@@ -27,6 +43,10 @@ exports.startFunction = function(fnc) {
   start_function = fnc;
 }
 
+exports.setBeatLength = function(length) {
+  state.beatCount = length;
+}
+
 /*
  * Adds a new robot to the UI
  * Call when a new robot connection is created
@@ -34,6 +54,12 @@ exports.startFunction = function(fnc) {
 exports.addRobot = function(ip) {
   io.sockets.emit('newRobot', {
     ip: ip
+  });
+
+  state.robots.push({
+    ip: ip,
+    notes: [],
+    active: false
   });
 };
 
@@ -54,6 +80,15 @@ exports.setRobotPattern = function(ip, notes, durations) {
     ip: ip,
     notes: combinedNotes
   });
+
+  for (var i = 0; i < state.robots.length; i++) {
+    if (state.robots[i].ip == ip) {
+      state.robots[i].notes = combinedNotes;
+      state.robots[i].active = true;
+      break;
+    }
+  }
+  //state.robots[state.robots.indexOf(ip)]
 };
 
 /*
@@ -64,6 +99,14 @@ exports.clearRobotPattern = function(ip) {
   io.sockets.emit('clearRobotPattern', {
     ip: ip
   });
+
+  for (var i = 0; i < state.robots.length; i++) {
+    if (state.robots[i].ip == ip) {
+      state.robots[i].notes = [];
+      state.robots[i].active = false;
+      break;
+    }
+  }
 };
 
 /*
@@ -74,6 +117,12 @@ exports.removeRobot = function(ip) {
   io.sockets.emit('removeRobot', {
     ip: ip
   });
+  for (var i = 0; i < state.robots.length; i++) {
+    if (state.robots[i].ip == ip) {
+      state.robots.splice(i,1);
+      break;
+    }
+  }
 };
 
 // Call when a loop is sent to the robots
