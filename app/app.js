@@ -119,7 +119,7 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'st
         state.octaves = new Val(data.octave_freq);
         state.thirds = new Val(data.third_freq);
         state.fifths = new Val(data.fifth_freq);
-        state.seventh = new Val(data.seventh_freq);
+        state.sevenths = new Val(data.seventh_freq);
 
         state.robots.forEach(function(robot) {
           for (var i = 0; i < robot.notes.length; i++) {
@@ -243,8 +243,8 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
       syncopation: $scope.state.syncopation,
       octave_freq: $scope.state.octaves.val,
       third_freq: $scope.state.thirds.val,
-      fifth_freq: $scope.state.fifth.val,
-      seventh_freq: $scope.state.seventh.val
+      fifth_freq: $scope.state.fifths.val,
+      seventh_freq: $scope.state.sevenths.val
     });
   };
 

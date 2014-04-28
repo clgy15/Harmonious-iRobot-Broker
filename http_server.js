@@ -36,11 +36,11 @@ var state = {
   patternNotes: [],
   started: false,
   robots: [],
-  octave_freq = 50,
-  third_freq = 50,
-  fifth_freq = 50,
-  seventh_freq = 50,
-  syncopation = false
+  octave_freq: 50,
+  third_freq: 50,
+  fifth_freq: 50,
+  seventh_freq: 50,
+  syncopation: false
 };
 
 io.sockets.on('connection', function(socket) {
