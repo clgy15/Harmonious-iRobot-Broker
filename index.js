@@ -6,6 +6,12 @@ var httpServer = require('./http_server');
 //   1. Each Robot now has a note length
 //   ex. 49 - length 2 49 - length 2 0 - length 1 51 - length 1
 
+// Robot Init States:
+// O: Connection
+// 1: Waiting
+// 2: Listening
+// 3: Playing
+
 // Keep track of the chat clients
 var clients = [];
 var init_notes = [];
@@ -82,6 +88,14 @@ var client_server = net.createServer(function (socket) {
       console.log("socket", socket);
       httpServer.clearRobotPattern(socket.remoteAddress);
     }
+    else if (data.readUInt8(0) == 2) { //WAITING
+      socket.init = 1;
+      httpServer.robotWaiting(socket.remoteAddress);
+    }
+    else if (data.readUInt8(0) == 3) { //WAITING
+      socket.init = 2;
+      httpServer.robotListening(socket.remoteAddress);
+    }
 
   });
 
@@ -146,70 +160,63 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.59');
+  if (data.system_initialized == false) {
+    client_server.listen(4454, '192.168.1.59');
 
-  setInterval(function(){
-    var string_parse = ''
+    setInterval(function(){
+      var string_parse = ''
 
-    //Beat or Loop
-    if (current_beat == beats_per_loop) {
-      //console.log('Loop');
-      current_beat = 0;
+      //Beat or Loop
+      if (current_beat == beats_per_loop) {
+        //console.log('Loop');
+        current_beat = 0;
 
-      //Check for new clients!
-      clients.forEach(function(client) {
-        //If the new connection hasn't seen a Loop yet...
-        if (client.init == 0) {
-          client.init = 1;
-        }
+        string_parse = '\x01'
+        httpServer.loop(milli_time);
+      }
+      else {
+        //console.log('Tick');
+        string_parse = '\x02'
+      }
 
-      });
+      //Now add # of Beats & # of Playing Robots
+      string_parse += String.fromCharCode(beats_per_loop) + String.fromCharCode(num_robots)+String.fromCharCode(milli_time/1000*64);
+      string_parse += String.fromCharCode(octave_freq) + String.fromCharCode(third_freq) + String.fromCharCode(fifth_freq) + String.fromCharCode(seventh_freq);
+      if (syncopation == true) {
+        string_parse += String.fromCharCode('1');
+      } else {
+        string_parse += String.fromCharCode('0');
+      }
 
-      string_parse = '\x01'
-      httpServer.loop(milli_time);
-    }
-    else {
-      //console.log('Tick');
-      string_parse = '\x02'
-    }
+      if (num_robots == 0) {
+        string_parse += String.fromCharCode(init_notes[current_beat]);
+        string_parse += String.fromCharCode(init_lengths[current_beat]);
+      }
+      else {
+        clients.forEach(function (client) {
+          //If init == 2, then client is fully initialized and playing
+          if (client.init == 3) {
+            string_parse += String.fromCharCode(client.notes[current_beat]);
+            string_parse += String.fromCharCode(client.lengths[current_beat]*(milli_time/1000*64 >> 0));
+          }
+        });
+      }
 
-    //Now add # of Beats & # of Playing Robots
-    string_parse += String.fromCharCode(beats_per_loop) + String.fromCharCode(num_robots)+String.fromCharCode(milli_time/1000*64);
-    string_parse += String.fromCharCode(octave_freq) + String.fromCharCode(third_freq) + String.fromCharCode(fifth_freq) + String.fromCharCode(seventh_freq);
-    if (syncopation == true) {
-      string_parse += String.fromCharCode('1');
-    } else {
-      string_parse += String.fromCharCode('0');
-    }
+      string_parse += '\r\n';
 
-    if (num_robots == 0) {
-      string_parse += String.fromCharCode(init_notes[current_beat]);
-      string_parse += String.fromCharCode(init_lengths[current_beat]);
-    }
-    else {
+      // var temp = []
+      // for (var i = 0; i < string_parse.length; i++) {
+      //   temp.push(string_parse.charCodeAt(i));
+      // }
+      // console.log(temp);
       clients.forEach(function (client) {
-        //If init == 2, then client is fully initialized and playing
-        if (client.init == 2) {
-          string_parse += String.fromCharCode(client.notes[current_beat]);
-          string_parse += String.fromCharCode(client.lengths[current_beat]*(milli_time/1000*64 >> 0));
-        }
+        client.write(string_parse);
       });
-    }
 
-    string_parse += '\r\n';
+      current_beat++;
 
-    // var temp = []
-    // for (var i = 0; i < string_parse.length; i++) {
-    //   temp.push(string_parse.charCodeAt(i));
-    // }
-    // console.log(temp);
-    clients.forEach(function (client) {
-      client.write(string_parse);
-    });
-
-    current_beat++;
-
-  }, milli_time);
+    }, milli_time);
+  }
 
 
 };

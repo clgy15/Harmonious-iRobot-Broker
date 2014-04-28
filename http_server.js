@@ -26,7 +26,7 @@ var update_settings_function;
 // $scope.robots.push({
 //   ip: info.ip,
 //   notes: [],
-//   active: false
+//   state: 0   <- 0 = Connection, 1 = Waiting, 2 = Listening, 3 = Playing
 // });
 
 var state = {
@@ -52,9 +52,17 @@ io.sockets.on('connection', function(socket) {
       state.maxLoops = data.maxLoops;
       state.started = true;
       state.patternNotes = data.notes;
+      data.system_initialized = false;
 
       start_function(data);
       start_function_called = true;
+    } else {
+      state.tempo = data.tempo;
+      state.maxLoops = data.maxLoops;
+      state.patternNotes = data.notes;
+      data.system_initialized = true;
+
+      start_function(data);
     }
   });
 
@@ -94,7 +102,7 @@ exports.addRobot = function(ip) {
   state.robots.push({
     ip: ip,
     notes: [],
-    active: false
+    state: 0
   });
 };
 
@@ -119,7 +127,7 @@ exports.setRobotPattern = function(ip, notes, durations) {
   for (var i = 0; i < state.robots.length; i++) {
     if (state.robots[i].ip == ip) {
       state.robots[i].notes = combinedNotes;
-      state.robots[i].active = true;
+      state.robots[i].state = 3;
       break;
     }
   }
@@ -138,7 +146,7 @@ exports.clearRobotPattern = function(ip) {
   for (var i = 0; i < state.robots.length; i++) {
     if (state.robots[i].ip == ip) {
       state.robots[i].notes = [];
-      state.robots[i].active = false;
+      state.robots[i].state = 0;
       break;
     }
   }
@@ -155,6 +163,30 @@ exports.removeRobot = function(ip) {
   for (var i = 0; i < state.robots.length; i++) {
     if (state.robots[i].ip == ip) {
       state.robots.splice(i,1);
+      break;
+    }
+  }
+};
+
+exports.robotWaiting = function(ip) {
+  io.sockets.emit('waitingRobot', {
+    ip: ip
+  });
+  for (var i = 0; i < state.robots.length; i++) {
+    if (state.robots[i].ip == ip) {
+      state.robots[i].state = 1;
+      break;
+    }
+  }
+};
+
+exports.robotListening = function(ip) {
+  io.sockets.emit('listeningRobot', {
+    ip: ip
+  });
+  for (var i = 0; i < state.robots.length; i++) {
+    if (state.robots[i].ip == ip) {
+      state.robots[i].state = 2;
       break;
     }
   }
