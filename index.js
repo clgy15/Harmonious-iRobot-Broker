@@ -39,18 +39,17 @@ var client_server = net.createServer(function (socket) {
       try {
         console.log("iRobot coming online...");
         console.log(data);
-        for (var i = 1; i <= beats_per_loop;) {
+        var dataStr = data.toString();
+        console.log(data.toString().length);
+        for (var i = 1; i < dataStr.length - 1; i += 2) {
           var note = data.readUInt8(i);
-          i++;
-          var length = data.readUInt8(i)/(milli_time/1000*64 >> 0);
+          var length = data.readUInt8(i + 1)/(milli_time/1000*64 >> 0);
           socket.notes.push(note);
           socket.lengths.push(length);
           for (var j = 1; j < length; j++) {
             socket.notes.push('1');
             socket.lengths.push(length);
           }
-          i++;
-
         }
         console.log(socket.notes)
         socket.init = 2;
@@ -71,6 +70,10 @@ var client_server = net.createServer(function (socket) {
       socket.init = 0;
       num_robots--;
 
+      socket.notes = [];
+      socket.lengths = [];
+
+      console.log("socket", socket);
       httpServer.clearRobotPattern(socket.remoteAddress);
     }
 
@@ -96,8 +99,8 @@ var client_server = net.createServer(function (socket) {
         num_robots--;
       }
 
-      httpServer.removeRobot(socket.remoteAddress);
-
+      httpServer.removeRobot(socket.name.split(":")[0]);
+      console.log("socket", socket);
   });
 
 
@@ -129,7 +132,7 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.16');
+  client_server.listen(4454, '192.168.1.59');
 
   setInterval(function(){
     var string_parse = ''
@@ -149,15 +152,11 @@ var startTCP = function(data) {
       });
 
       string_parse = '\x01'
-
-      httpServer.loop();
-
+      httpServer.loop(milli_time);
     }
     else {
       //console.log('Tick');
       string_parse = '\x02'
-
-      httpServer.beat();
     }
 
     //Now add # of Beats & # of Playing Robots
@@ -171,7 +170,7 @@ var startTCP = function(data) {
         //If init == 2, then client is fully initialized and playing
         if (client.init == 2) {
           string_parse += String.fromCharCode(client.notes[current_beat]);
-          string_parse += String.fromCharCode(client.lengths[current_beat]);
+          string_parse += String.fromCharCode(client.lengths[current_beat]*(milli_time/1000*64 >> 0));
         }
       });
     }

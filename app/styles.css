@@ -5,6 +5,7 @@
 }
 
 body {
+  margin: 0;
   font-family: "Helvetica Neue Light", "Helvetica Neue", sans-serif;
 }
 
@@ -35,6 +36,7 @@ body {
 
 .pane {
   display: block;
+  padding: 0.5em;
   width: 100%;
 }
 

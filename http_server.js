@@ -8,13 +8,18 @@ app.use(express.static(__dirname + '/app'));
 var io = require('socket.io').listen(app.listen(port));
 
 var start_function;
+var start_function_called = false;
+
+var state = {};
 
 io.sockets.on('connection', function(socket) {
-  console.log("kdsfjldkjflsfkj");
-  socket.emit('connect', { hello: "hello socket" });
+  socket.emit('connect', state);
   socket.on('setup', function(data) {
     console.log(data);
-    start_function(data);
+    if (!start_function_called) {
+      start_function(data);
+      start_function_called = true;
+    }
   });
 });
 
@@ -71,12 +76,14 @@ exports.removeRobot = function(ip) {
   });
 };
 
-// Call when a beat is sent to the robots
-exports.beat = function() {
-  io.sockets.emit('beat', {});
+// Call when a loop is sent to the robots
+exports.loop = function(beat_ms_time) {
+  console.log("loop to http server");
+  io.sockets.emit('loop', {
+    beatTime: beat_ms_time
+  });
 };
 
-// Call when a loop is sent to the robots
-exports.loop = function() {
-  io.sockets.emit('loop', {});
+exports.setState = function(state) {
+  state = state;
 };
