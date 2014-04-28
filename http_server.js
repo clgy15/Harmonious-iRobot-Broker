@@ -10,6 +10,18 @@ var io = require('socket.io').listen(app.listen(port));
 var start_function;
 var start_function_called = false;
 
+var update_settings_function;
+
+// Setting Function:
+//   {
+//      octave_freq: 50,
+//      third_freq: 50,
+//      fifth_freq: 50,
+//      seventh_freq: 50
+//   }
+//
+//
+
 // $scope.robots.push({
 //   ip: info.ip,
 //   notes: [],
@@ -39,10 +51,19 @@ io.sockets.on('connection', function(socket) {
       start_function_called = true;
     }
   });
+
+  socket.on('settings', function(data) {
+    console.log(data);
+    update_settings_function(data);
+  });
 });
 
 exports.startFunction = function(fnc) {
   start_function = fnc;
+}
+
+exports.settingsFunction = function(fnc) {
+  update_settings_function = fnc;
 }
 
 exports.setBeatLength = function(length) {

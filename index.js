@@ -18,6 +18,11 @@ var milli_time = 0;
 var max_loops = 4;
 var duration = 0;
 
+var octave_freq = 50;
+var third_freq = 50;
+var fifth_freq = 50;
+var seventh_freq = 50;
+
 
 var client_server = net.createServer(function (socket) {
 
@@ -106,6 +111,12 @@ var client_server = net.createServer(function (socket) {
 
 });
 
+var updateSettings = function(data) {
+  octave_freq = data.octave_freq;
+  third_freq = data.third_freq;
+  fifth_freq = data.fifth_freq;
+  seventh_freq = data.seventh_freq;
+}
 
 
 var startTCP = function(data) {
@@ -188,58 +199,10 @@ var startTCP = function(data) {
     });
 
     current_beat++;
-    //console.log(clients.length + " Clients Connected & " + num_robots + " Robot's Playing");
 
   }, milli_time);
 
-  // setTimeout(function() {
-  //   httpServer.addRobot("192.168.1.16");
-  //   setTimeout(function() {
-  //     httpServer.setRobotPattern("192.168.1.16", [
-  //       0,
-  //       48,
-  //       48,
-  //       51,
-  //       60,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       65,
-  //       63,
-  //       65,
-  //       65,
-  //       65,
-  //       63,
-  //       65
-  //     ], [
-  //       1,
-  //       1,
-  //       2,
-  //       2,
-  //       2,
-  //       1,
-  //       1,
-  //       1,
-  //       2,
-  //       2,
-  //       2,
-  //       1,
-  //       2,
-  //       1,
-  //       1,
-  //       2,
-  //       2,
-  //       2,
-  //       1,
-  //       4
-  //     ]);
-  //   }, 5000);
-  // }, 5000);
+
 };
 
 httpServer.startFunction(startTCP);
