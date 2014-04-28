@@ -76,8 +76,8 @@
             <label class="form-input-label no-table" for="octave">Octave Frequencies</label>
             <div class="pad"></div>
             <div class="form-input-entry no-table">
-              <input type="range" name="octave" min="0" max="100" ng-model="octaves.val" />
-              <input class="form-input" type="number" name="octave_text" min="0" max="100" ng-model="octaves.val" />
+              <input type="range" name="octave" min="0" max="100" ng-model="state.octaves.val" />
+              <input class="form-input" type="number" name="octave_text" min="0" max="100" ng-model="state.octaves.val" />
             </div>
           </div>
 
@@ -85,8 +85,8 @@
             <label class="form-input-label no-table" for="third">Third Frequencies</label>
             <div class="pad"></div>
             <div class="form-input-entry no-table">
-              <input type="range" name="third" min="0" max="100" ng-model="thirds.val" />
-              <input class="form-input" type="number" name="third_text" min="0" max="100" ng-model="thirds.val" />
+              <input type="range" name="third" min="0" max="100" ng-model="state.thirds.val" />
+              <input class="form-input" type="number" name="third_text" min="0" max="100" ng-model="state.thirds.val" />
             </div>
           </div>
 
@@ -94,8 +94,8 @@
             <label class="form-input-label no-table" for="fifth">Fifth Frequencies</label>
             <div class="pad"></div>
             <div class="form-input-entry no-table">
-              <input type="range" name="fifth" min="0" max="100" ng-model="fifths.val" />
-              <input class="form-input" type="number" name="fifth_text" min="0" max="100" ng-model="fifths.val" />
+              <input type="range" name="fifth" min="0" max="100" ng-model="state.fifths.val" />
+              <input class="form-input" type="number" name="fifth_text" min="0" max="100" ng-model="state.fifths.val" />
             </div>
           </div>
 
@@ -103,10 +103,14 @@
             <label class="form-input-label no-table" for="seventh">Seventh Frequencies</label>
             <div class="pad"></div>
             <div class="form-input-entry no-table">
-              <input type="range" name="seventh" min="0" max="100" ng-model="sevenths.val" />
-              <input class="form-input" type="number" name="seventh_text" min="0" max="100" ng-model="sevenths.val" />
+              <input type="range" name="seventh" min="0" max="100" ng-model="state.sevenths.val" />
+              <input class="form-input" type="number" name="seventh_text" min="0" max="100" ng-model="state.sevenths.val" />
             </div>
           </div>
+
+          <div class="pad"></div>
+          <button class="button button-rounded button-flat-primary" ng-click="updateSettings()">Update Settings</button>
+          <div class="pad"></div>
         </div>
       </div>
 

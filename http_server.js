@@ -14,6 +14,7 @@ var update_settings_function;
 
 // Setting Function:
 //   {
+//      syncopation: false,
 //      octave_freq: 50,
 //      third_freq: 50,
 //      fifth_freq: 50,

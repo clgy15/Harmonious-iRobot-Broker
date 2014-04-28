@@ -114,6 +114,13 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'st
         state.started = data.started;
         state.robots = data.robots;
 
+        // Preferences
+        state.syncopation = data.syncopation;
+        state.octaves = new Val(data.octave_freq);
+        state.thirds = new Val(data.third_freq);
+        state.fifths = new Val(data.fifth_freq);
+        state.seventh = new Val(data.seventh_freq);
+
         state.robots.forEach(function(robot) {
           for (var i = 0; i < robot.notes.length; i++) {
             if (robot.notes[i].pitch == 1) {
@@ -171,10 +178,7 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
   $scope.pitch = 60;
 
   // Preferences
-  $scope.thirds = new Val(50);
-  $scope.fifths = new Val(50);
-  $scope.sevenths = new Val(50);
-  $scope.octaves = new Val(50);
+  $scope.state = state;
 
   $scope.noteTypes = [
     {
@@ -234,6 +238,16 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
     return totalLength;
   };
 
+  $scope.updateSettings = function() {
+    socket.emit('settings', {
+      syncopation: $scope.state.syncopation,
+      octave_freq: $scope.state.octaves.val,
+      third_freq: $scope.state.thirds.val,
+      fifth_freq: $scope.state.fifth.val,
+      seventh_freq: $scope.state.seventh.val
+    });
+  };
+
   $scope.start = function() {
     console.log($scope.state.beatCount);
     console.log(((64 * 60) / $scope.state.tempo) >> 0);
@@ -247,7 +261,10 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
         maxLoops: $scope.state.maxLoops,
         notes: $scope.state.patternNotes
       });
+
       $scope.state.started = true;
+
+      $scope.updateSettings();
     }
   };
 
