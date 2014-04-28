@@ -282,12 +282,10 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
                  { duration: 2, pitch: 60 },
                  { duration: 1, pitch: 65 },
                  { duration: 1, pitch: 65 },
-                 { duration: 1, pitch: 65 },
+                 { duration: 3, pitch: 65 },
                  { duration: 2, pitch: 65 },
                  { duration: 2, pitch: 65 },
-                 { duration: 2, pitch: 65 },
-                 { duration: 1, pitch: 65 },
-                 { duration: 2, pitch: 65 },
+                 { duration: 3, pitch: 65 },
                  { duration: 1, pitch: 65 },
                  { duration: 1, pitch: 63 },
                  { duration: 2, pitch: 65 },
@@ -305,6 +303,8 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
   console.log(state.robots);
   $scope.state = state;
   $scope.beat = -1;
+  $scope.toAdd = [];
+  $scope.toRemove = [];
 
   socket.on('newRobot', function(info) {
     var contains = false;
@@ -327,31 +327,13 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
   });
 
   socket.on('setRobotPattern', function(info) {
-    $scope.state.robots.forEach(function(robot) {
-      if (robot.ip === info.ip) {
-        $scope.$apply(function() {
-          robot.notes = [];
-          info.notes.forEach(function(note) {
-            if (note.pitch != 1) {
-              robot.notes.push(note);
-            }
-          })
-          //robot.notes = info.notes;
-          robot.active = true;
-        });
-      }
-    });
+    setTimeout(function() {
+      $scope.toAdd.push(info);
+    }, 500);
   });
 
   socket.on('clearRobotPattern', function(info) {
-    $scope.state.robots.forEach(function(robot) {
-      if (robot.ip === info.ip) {
-        $scope.$apply(function() {
-          robot.notes = [];
-          robot.active = false;
-        });
-      }
-    });
+    $scope.toRemove.push(info);
   });
 
   socket.on('removeRobot', function(info) {
@@ -380,9 +362,36 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
       });
     }, info.beatTime);
 
+    $scope.state.robots.forEach(function(robot) {
+      $scope.toAdd.forEach(function(info) {
+        if (robot.ip === info.ip) {
+          $scope.$apply(function() {
+            robot.notes = [];
+            info.notes.forEach(function(note) {
+              if (note.pitch != 1) {
+                robot.notes.push(note);
+              }
+            })
+            //robot.notes = info.notes;
+            robot.active = true;
+          });
+        }
+      });
+
+      $scope.toRemove.forEach(function(info) {
+        if (robot.ip === info.ip) {
+          $scope.$apply(function() {
+            robot.notes = [];
+            robot.active = false;
+          });
+        }
+      });
+    });
+
     $scope.$apply(function() {
       $scope.beat = 0;
     });
+
   });
 }]);
 

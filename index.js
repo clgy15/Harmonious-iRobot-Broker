@@ -177,9 +177,9 @@ var startTCP = function(data) {
     string_parse += String.fromCharCode(beats_per_loop) + String.fromCharCode(num_robots)+String.fromCharCode(milli_time/1000*64);
     string_parse += String.fromCharCode(octave_freq) + String.fromCharCode(third_freq) + String.fromCharCode(fifth_freq) + String.fromCharCode(seventh_freq);
     if (syncopation == true) {
-      string_parse += String.fromCharCode('0');
-    } else {
       string_parse += String.fromCharCode('1');
+    } else {
+      string_parse += String.fromCharCode('0');
     }
 
     if (num_robots == 0) {
@@ -215,3 +215,4 @@ var startTCP = function(data) {
 };
 
 httpServer.startFunction(startTCP);
+httpServer.settingsFunction(updateSettings);
