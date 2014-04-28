@@ -16,12 +16,14 @@ var start_function_called = false;
 //   active: false
 // });
 
-var state = {beatCount: 0,
-            tempo: 0,
-            maxLoops: 0,
-            patternNotes: [],
-            started: false,
-            robots: []};
+var state = {
+  beatCount: 8,
+  tempo: 120,
+  maxLoops: 5,
+  patternNotes: [],
+  started: false,
+  robots: []
+};
 
 io.sockets.on('connection', function(socket) {
   socket.emit('connect', state);

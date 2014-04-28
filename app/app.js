@@ -11,9 +11,6 @@ angular.module('goodVibrations').config(['$locationProvider', function($location
 
 angular.module('goodVibrations').factory('state', [function() {
   return {
-    setValue: function(current, updated) {
-      return (updated == null) ? current : updated;
-    },
     beatCount: 8,
     tempo: 120,
     maxLoops: 5,
@@ -107,13 +104,25 @@ angular.module('goodVibrations').directive('note', [function() {
 
 angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'state', function($scope, socket, state) {
   socket.on('connect', function(data) {
+    console.log("state", data);
     if (data != null) {
-      state.beatCount = state.setValue(state.beatCount, data.beatCount);
-      state.tempo = state.setValue(state.tempo, data.tempo);
-      state.maxLoops = state.setValue(state.maxLoops, data.maxLoops);
-      state.patternNotes = state.setValue(state.patternNotes, data.patternNotes);
-      state.started = state.setValue(state.started, data.started);
-      state.robots = state.setValue(state.robots, data.robots);
+      $scope.$apply(function() {
+        state.beatCount = data.beatCount;
+        state.tempo = data.tempo;
+        state.maxLoops = data.maxLoops;
+        state.patternNotes = data.patternNotes;
+        state.started = data.started;
+        state.robots = data.robots;
+
+        state.robots.forEach(function(robot) {
+          for (var i = 0; i < robot.notes.length; i++) {
+            if (robot.notes[i].pitch == 1) {
+              robot.notes.splice(i, 1);
+              i--;
+            }
+          }
+        });
+      });
     }
   });
 
@@ -158,11 +167,7 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'st
 }]);
 
 angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket', 'state', function($scope, socket, state) {
-  $scope.beatCount = state.beatCount;
-  $scope.tempo = state.tempo;
-  $scope.maxLoops = state.maxLoops;
-  $scope.notes = state.patternNotes;
-  $scope.started = state.started;
+  $scope.state = state;
   $scope.pitch = 60;
 
   // Preferences
@@ -204,14 +209,14 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
   ];
 
   $scope.addNote = function(type, pitch) {
-    if (type.duration + $scope.patternLength() <= $scope.beatCount) {
+    if (type.duration + $scope.patternLength() <= $scope.state.beatCount) {
       if (type.isRest) {
-        $scope.notes.push({
+        $scope.state.patternNotes.push({
           duration: type.duration,
           pitch: 0
         });
       } else {
-        $scope.notes.push({
+        $scope.state.patternNotes.push({
           duration: type.duration,
           pitch: pitch
         });
@@ -223,31 +228,31 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
 
   $scope.patternLength = function() {
     var totalLength = 0;
-    $scope.notes.forEach(function(note) {
+    $scope.state.patternNotes.forEach(function(note) {
       totalLength += note.duration;
     });
     return totalLength;
   };
 
   $scope.start = function() {
-    console.log($scope.beatCount);
-    console.log(((64 * 60) / $scope.tempo) >> 0);
-    console.log($scope.maxLoops);
-    console.log($scope.notes);
-    if(!$scope.started) {
+    console.log($scope.state.beatCount);
+    console.log(((64 * 60) / $scope.state.tempo) >> 0);
+    console.log($scope.state.maxLoops);
+    console.log($scope.state.patternNotes);
+    if(!$scope.state.started) {
       socket.emit('setup', {
-        beatCount: $scope.beatCount,
-        tempo: $scope.tempo,
-        duration: ((64 * 60) / $scope.tempo) >> 0,
-        maxLoops: $scope.maxLoops,
-        notes: $scope.notes
+        beatCount: $scope.state.beatCount,
+        tempo: $scope.state.tempo,
+        duration: ((64 * 60) / $scope.state.tempo) >> 0,
+        maxLoops: $scope.state.maxLoops,
+        notes: $scope.state.patternNotes
       });
-      $scope.started = true;
+      $scope.state.started = true;
     }
   };
 
   $scope.start_happy = function() {
-    if(!$scope.started) {
+    if(!$scope.state.started) {
       socket.emit('setup', {
         beatCount: 33,
         duration: 12,
@@ -274,19 +279,20 @@ angular.module('goodVibrations').controller('UserParamsCtrl', ['$scope', 'socket
                  { duration: 1, pitch: 63 },
                  { duration: 4, pitch: 65 } ]
       });
-      $scope.started = true;
+      $scope.state.started = true;
     }
   };
 }]);
 
 angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "state", function($scope, socket, state) {
-  $scope.robots = state.robots;
+  console.log(state.robots);
+  $scope.state = state;
   $scope.beat = -1;
 
   socket.on('newRobot', function(info) {
     var contains = false;
 
-    $scope.robots.forEach(function(robot) {
+    $scope.state.robots.forEach(function(robot) {
       if (robot.ip === info.ip) {
         contains = true;
       }
@@ -294,7 +300,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
 
     if (!contains) {
       $scope.$apply(function() {
-        $scope.robots.push({
+        $scope.state.robots.push({
           ip: info.ip,
           notes: [],
           active: false
@@ -304,7 +310,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
   });
 
   socket.on('setRobotPattern', function(info) {
-    $scope.robots.forEach(function(robot) {
+    $scope.state.robots.forEach(function(robot) {
       if (robot.ip === info.ip) {
         $scope.$apply(function() {
           robot.notes = [];
@@ -321,7 +327,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
   });
 
   socket.on('clearRobotPattern', function(info) {
-    $scope.robots.forEach(function(robot) {
+    $scope.state.robots.forEach(function(robot) {
       if (robot.ip === info.ip) {
         $scope.$apply(function() {
           robot.notes = [];
@@ -333,10 +339,10 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
 
   socket.on('removeRobot', function(info) {
     console.log("Removing Robot with ip", info.ip);
-    for (var i = 0; i < $scope.robots.length; i++) {
-      if ($scope.robots[i].ip == info.ip) {
+    for (var i = 0; i < $scope.state.robots.length; i++) {
+      if ($scope.state.robots[i].ip == info.ip) {
         $scope.$apply(function() {
-          $scope.robots.splice(i, 1);
+          $scope.state.robots.splice(i, 1);
         });
         i--;
       }

@@ -330,7 +330,7 @@ input[type="text"]:disabled, input[type="number"]:disabled, input[type="textarea
 
   .input-pane {
     width: 30%;
-    border-right: 0.5em solid #bfbfbf;
+    border-right: 0.5em solid orange;
   }
 
   .activity-pane {

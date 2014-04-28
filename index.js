@@ -133,7 +133,7 @@ var startTCP = function(data) {
   console.log(milli_time);
   console.log(max_loops);
 
-  client_server.listen(4454, '192.168.1.16');
+  client_server.listen(4454, '192.168.1.59');
 
   setInterval(function(){
     var string_parse = ''
