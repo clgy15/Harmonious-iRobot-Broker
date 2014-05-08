@@ -64,7 +64,7 @@ var client_server = net.createServer(function (socket) {
           }
         }
         console.log(socket.notes)
-        socket.init = 2;
+        socket.init = 3;
         num_robots++;
 
         httpServer.setRobotPattern(socket.remoteAddress, socket.notes, socket.lengths);
@@ -161,7 +161,7 @@ var startTCP = function(data) {
   console.log(max_loops);
 
   if (data.system_initialized == false) {
-    client_server.listen(4454, '192.168.1.59');
+    client_server.listen(4454, '192.168.1.2');
 
     setInterval(function(){
       var string_parse = ''

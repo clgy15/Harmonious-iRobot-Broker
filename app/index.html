@@ -14,21 +14,21 @@
           <div class="form-input-line">
             <label class="form-input-label" for="beats">Beats per Loop</label>
             <div class="form-input-entry">
-              <input type="number" class="form-input" name="beats" ng-disabled="state.started" ng-model="state.beatCount" />
+              <input type="number" class="form-input" name="beats" ng-disabled="state.hasActiveRobot()" ng-model="state.beatCount" />
             </div>
           </div>
 
           <div class="form-input-line">
             <label class="form-input-label" for="tempo">Tempo</label>
             <div class="form-input-entry">
-              <input type="number" class="form-input" name="tempo" ng-disabled="state.started" ng-model="state.tempo" />
+              <input type="number" class="form-input" name="tempo" ng-disabled="state.hasActiveRobot()" ng-model="state.tempo" />
             </div>
           </div>
 
           <div class="form-input-line">
             <label class="form-input-label" for="maxLoops">Robot Loops</label>
             <div class="form-input-entry">
-              <input type="number" class="form-input" name="maxLoops" ng-disabled="state.started" ng-model="state.maxLoops" />
+              <input type="number" class="form-input" name="maxLoops" ng-disabled="state.hasActiveRobot()" ng-model="state.maxLoops" />
             </div>
           </div>
 
@@ -44,7 +44,7 @@
             <div class="form-input-line">
               <label class="form-input-label" for="pitch">Pitch</label>
               <div class="form-input-entry">
-                <input type="number" class="form-input" min="31" max="127" name="pitch" ng-disabled="state.started || noteType.isRest" ng-model="pitch" />
+                <input type="number" class="form-input" min="31" max="127" name="pitch" ng-disabled="state.hasActiveRobot() || noteType.isRest" ng-model="pitch" />
               </div>
             </div>
 
@@ -65,8 +65,8 @@
           </div>
 
           <div>
-            <button type="submit" class="button button-rounded button-flat-primary" ng-click="start()" ng-disabled="state.started">{{ started ? "Running" : "Start" }}</button>
-            <button type="submit" class="button button-rounded button-flat-primary" ng-click="start_happy()" ng-disabled="state.started">{{ started ? "Happy" : "Because I'm..." }}</button>
+            <button type="submit" class="button button-rounded button-flat-primary" ng-click="start()" ng-disabled="state.hasActiveRobot()">{{ state.hasActiveRobot() ? "Running" : "Start" }}</button>
+            <button type="submit" class="button button-rounded button-flat-primary" ng-click="start_happy()" ng-disabled="state.hasActiveRobot()">{{ state.hasActiveRobot() ? "Happy" : "Because I'm..." }}</button>
           </div>
         </div>
 
@@ -125,11 +125,11 @@
               </div>
               <div class="form-input-entry full-width">
                 <ul class="block-list note-list full-width">
-                  <li class="block-list-element" ng-repeat="note in robot.notes" ng-show="robot.active">
+                  <li class="block-list-element" ng-repeat="note in robot.notes" ng-show="robot.state == 3">
                     <note class="button-icon" url="{{getNoteImage(note.duration, note.pitch)}}" start-beat="{{startBeat($index)}}" current-beat="beat" duration="{{note.duration}}"></note>
                     <span class="button-icon-text">{{getNoteName(note.pitch)}}</span>
                   </li>
-                  <div class="default-text" ng-hide="robot.active">Not Playing</div>
+                  <div class="default-text" ng-hide="robot.state == 3">{{notesText()}}</div>
                 </ul>
               </div>
             </div>

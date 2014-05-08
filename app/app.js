@@ -3,6 +3,12 @@ To DO:
    1: Enter & Tab Key Functionality
 
 */
+var RobotState = {
+  CONNECTED: 0,
+  WAITING: 1,
+  LISTENING: 2,
+  PLAYING: 3
+};
 
 angular.module('goodVibrations', []);
 angular.module('goodVibrations').config(['$locationProvider', function($locationProvider) {
@@ -11,11 +17,25 @@ angular.module('goodVibrations').config(['$locationProvider', function($location
 
 angular.module('goodVibrations').factory('state', [function() {
   return {
+    hasActiveRobot: function() {
+      var result = false;
+      this.robots.forEach(function(robot) {
+        if (robot.state != RobotState.CONNECTED) {
+          result = true;
+        }
+      });
+
+      return result;
+    },
     beatCount: 8,
     tempo: 120,
     maxLoops: 5,
     patternNotes: [],
-    started: false,
+    syncopation: false,
+    thirds: new Val(50),
+    fifths: new Val(50),
+    sevenths: new Val(50),
+    octaves: new Val(50),
     robots: []
   };
 }]);
@@ -111,7 +131,6 @@ angular.module('goodVibrations').controller('PageCtrl', ['$scope', 'socket', 'st
         state.tempo = data.tempo;
         state.maxLoops = data.maxLoops;
         state.patternNotes = data.patternNotes;
-        state.started = data.started;
         state.robots = data.robots;
 
         // Preferences
@@ -320,7 +339,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
         $scope.state.robots.push({
           ip: info.ip,
           notes: [],
-          active: false
+          state: RobotState.CONNECTED
         });
       });
     }
@@ -348,6 +367,28 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
     }
   });
 
+  socket.on('waitingRobot', function(info) {
+    console.log("Robot" + info.ip + "waiting");
+    $scope.state.robots.forEach(function(robot) {
+      if (robot.ip === info.ip) {
+        $scope.$apply(function() {
+          robot.state = RobotState.WAITING;
+        });
+      }
+    });
+  });
+
+  socket.on('listeningRobot', function(info) {
+    console.log("Robot" + info.ip + "listening");
+    $scope.state.robots.forEach(function(robot) {
+      if (robot.ip === info.ip) {
+        $scope.$apply(function() {
+          robot.state = RobotState.LISTENING;
+        });
+      }
+    });
+  });
+
   var beatLoop = null;
 
   socket.on('loop', function(info) {
@@ -373,7 +414,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
               }
             })
             //robot.notes = info.notes;
-            robot.active = true;
+            robot.state = RobotState.PLAYING;
           });
         }
       });
@@ -382,7 +423,7 @@ angular.module('goodVibrations').controller('RobotsCtrl', ["$scope", "socket", "
         if (robot.ip === info.ip) {
           $scope.$apply(function() {
             robot.notes = [];
-            robot.active = false;
+            robot.state = RobotState.CONNECTED;
           });
         }
       });
@@ -402,6 +443,20 @@ angular.module('goodVibrations').controller('RobotCtrl', ["$scope", function($sc
       beatSum += $scope.robot.notes[i].duration;
     }
     return beatSum;
+  };
+
+  $scope.notesText = function() {
+    switch ($scope.robot.state) {
+    case RobotState.CONNECTED:
+      return "Inactive";
+      break;
+    case RobotState.WAITING:
+      return "Waiting";
+      break;
+    case RobotState.LISTENING:
+      return "Listening";
+      break;
+    }
   };
 }]);
 
